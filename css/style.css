@@ -67,6 +67,7 @@ p {
     color: #ffdb00;
     margin: auto;
     padding: auto;
+    font-weight: bold;
 }
 
 #fast {
@@ -103,23 +104,43 @@ p {
     display: block;
 }
 
-.fade_in_slow {
+
+#canvasOverlay{
+    position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .5s ease;
+}
+
+#clickMe{
+    position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center; 
+}
+
+#canvas:hover #canvasOverlay{
+    opacity: 1
+}
+
+/* fade in */
+
     animation: fadeIn ease 5s;
     -webkit-animation: fadeIn ease 5s;
     -moz-animation: fadeIn ease 5s;
     -o-animation: fadeIn ease 5s;
     -ms-animation: fadeIn ease 5s;
-    /* animation-delay:  5s; */
-  }
 
-/* fade in */
-.fade_in {
-    animation: fadeIn ease 3s;
-    -webkit-animation: fadeIn ease 3s;
-    -moz-animation: fadeIn ease 3s;
-    -o-animation: fadeIn ease 3s;
-    -ms-animation: fadeIn ease 3s;
-    /* animation-delay: fadeIn ease 2s; */
+    animation-delay: fadeIn ease 5s;
+
   }
 
 
@@ -225,6 +246,10 @@ p {
 
 .archivedCanvas{
     }
+
+#archive > div{
+    margin-bottom: 5vh
+}
 
 /* TABLET + DESKTOP BELOW THIS LINE*/
 @media screen and (min-width: 875px )   {
