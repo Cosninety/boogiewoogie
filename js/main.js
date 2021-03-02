@@ -25,10 +25,7 @@ d3.csv("data/buildingBlock.csv", function(result){
     dataBuildings = result;
 });
 
-function Execute(){
-    document.getElementById("mondrian").className = "fade_out";
-    document.getElementById("chartArea").className = "fade_in";
-    document.getElementById("canvasOverlay").style.display="none";
+
 
 //request data from API    
 function fetchdata() {
@@ -66,7 +63,7 @@ function fetchdata() {
 function writedata(data) {
     var t = new Date();
     var timeid = t.getTime();
-    var timeStamp = t.toString();
+    var timeStamp = t.toISOString().replace(/:/g, "-").replace(".", "-");
     var filename = "img-" + timeid;
     //how to take the svg/xml structure and simply write it to firebase?
     //var dataSVG = (new XMLSerializer()).serializeToString(document.getElementById("chartArea").getElementsByTagName("svg").item(0));
@@ -75,7 +72,7 @@ function writedata(data) {
 
     db.ref('images/' + filename).set({
         id: filename,
-        dataSVG: "null",
+        dataSVG: "dataSVG",
         dataJSON: data,
         time: timeStamp
     });
@@ -254,7 +251,6 @@ $(document).ready(function(){
         document.getElementById("mondrian").style.display = "none";
         var chartArea = document.getElementById("chartArea");
         var dataOnce = snapshot.val();
-        console.log(dataOnce);
 
         //the JSONData variable is the JSON format of the last request. Can use that to draw a canvas while you wait for the next request to come in.
         var dataJSONLast = Object.values(dataOnce)[Object.keys(dataOnce).length - 1].dataJSON;
@@ -294,7 +290,7 @@ $(document).ready(function(){
 
             //archiveTitle contains the title text of the svg:
             var titleElement = document.createElement("p");
-            var archiveTitle = document.createTextNode(dataOnce[key].time.substr(0, 24) + ":");
+            var archiveTitle = document.createTextNode(dataOnce[key].time + ":");
             titleElement.appendChild(archiveTitle);
 
             //archiveCanvas contains the svg:
@@ -315,4 +311,21 @@ $(document).ready(function(){
     });
 });
     
+ function writedata(data) {
+        var t = new Date();
+        var timeid = t.getTime();
+        var timeStamp = t.toISOString().replace(/:/g, "-").replace(".", "-");
+        var filename = "img-" + timeid;
+        //how to take the svg/xml structure and simply write it to firebase?
+        //var dataSVG = (new XMLSerializer()).serializeToString(document.getElementById("chartArea").getElementsByTagName("svg").item(0));
+
+        console.log(timeid, timeStamp, filename, data);
+
+        db.ref('images/' + filename).set({
+            id: filename,
+            dataSVG: "dataSVG",
+            dataJSON: data,
+            time: timeStamp
+            });
 }
+
