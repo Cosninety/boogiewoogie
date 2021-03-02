@@ -67,6 +67,7 @@ p {
     color: #ffdb00;
     margin: auto;
     padding: auto;
+    font-weight: bold;
 }
 
 #fast {
@@ -83,10 +84,11 @@ p {
 #chartArea {
     /* max-height: 45vw; */
     /* max-width: 100vw; */
-    margin: 5px 0 5px 0;
+    margin: 5px auto 5px auto;
     text-align: center;
     display: block;
     z-index: 8;
+    transform: translate(20%);
 }
 
 #svgId{
@@ -103,23 +105,39 @@ p {
     display: block;
 }
 
-.fade_in_slow {
+#canvasOverlay{
+    position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 1;
+  transition: .5s ease;
+}
+
+#clickMe{
+    position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+    background-color: rgba(255,255,255,0.8);
+    font-size: 100px;
+    border-radius: 25px;
+}
+
+/* fade in */
+.fade_in {
     animation: fadeIn ease 5s;
     -webkit-animation: fadeIn ease 5s;
     -moz-animation: fadeIn ease 5s;
     -o-animation: fadeIn ease 5s;
     -ms-animation: fadeIn ease 5s;
-    /* animation-delay:  5s; */
-  }
-
-/* fade in */
-.fade_in {
-    animation: fadeIn ease 3s;
-    -webkit-animation: fadeIn ease 3s;
-    -moz-animation: fadeIn ease 3s;
-    -o-animation: fadeIn ease 3s;
-    -ms-animation: fadeIn ease 3s;
-    /* animation-delay: fadeIn ease 2s; */
+    animation-delay: fadeIn ease 5s;
   }
 
 
@@ -226,6 +244,14 @@ p {
 .archivedCanvas{
     }
 
+#archive > div{
+    margin-bottom: 5vh
+}
+
+#archive > div > div{
+    transform: translate(35%)
+}
+
 /* TABLET + DESKTOP BELOW THIS LINE*/
 @media screen and (min-width: 875px )   {
 
@@ -261,7 +287,6 @@ p {
         grid-column: 2;
         grid-row: 2 / span 1;
     }
-
 
     #canvas {
         /* max-height: 70vh; */
@@ -389,9 +414,17 @@ p {
         background: #ff6661;
         -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
     }
-
-
-
-
-
+#canvasOverlay{
+  opacity: 0;
+  transition: .5s ease;
+}
+#canvas:hover #canvasOverlay{
+    opacity: 1
+}
+#chartArea {
+    transform: translate(0,0)
+}
+#archive > div > div{
+    transform: translate(0,0)
+}
 }
