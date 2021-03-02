@@ -52,7 +52,7 @@ function fetchdata() {
                 data.push(element);
             });
             getStreetSpeeds();
-            document.getElementByClass("d3-tip").style.display="none";
+           
         },
         error: function (e) {
             console.log("error loading street data " + e);
@@ -139,6 +139,8 @@ function updateTime() {
 
 
 setInterval(updateTime, 1000) 
+
+document.getElementByClass("d3-tip").style.display="none";
 
 function drawSVG(data, container, scaleFactor){
             console.log(data);
