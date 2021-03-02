@@ -34,7 +34,8 @@ function Execute(){
     document.getElementById("mondrian").className = "fade_out";
     document.getElementById("chartArea").className = "fade_in";
     document.getElementById("canvasOverlay").style.display="none";
-    document.getElementByClassName("d3-tip").style.display="none";
+
+
   
 
 //request reference street data from endpoint  
@@ -146,8 +147,7 @@ setInterval(updateTime, 1000)
 function drawSVG(data, container, scaleFactor){
             console.log(data);
             //d3 ____________________________________________________________________
-
-            document.getElementByClassName("d3-tip").style.display="initial";
+  
             //clear canvas for new data load...
             d3.select(container).selectAll('*').remove();
     
@@ -198,8 +198,11 @@ function drawSVG(data, container, scaleFactor){
                 // console.log("vHeight is now" + vH);
 
                 //tooltip
+               
+
                 const tip = d3.tip()
                     .attr('class', 'd3-tip')
+                    .attr('id', 'd3-tip')
                     .html(d => d)
                     .html(d => {
                         if (d['speed'] != null){
@@ -218,6 +221,9 @@ function drawSVG(data, container, scaleFactor){
                         
                     })
                 svg.call(tip);
+
+               
+                // document.getElementById("d3-tip").style.display="initial";
 
                 //streets
                 streets = svg.append("g")
