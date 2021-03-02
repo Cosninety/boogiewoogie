@@ -20,6 +20,7 @@ var firebaseConfig = {
     messagingSenderId: "973992429447",
     appId: "1:973992429447:web:e4cb07cebb830676d43522"
 };
+
 firebase.initializeApp(firebaseConfig);
 var db = firebase.database();
 var locRef = db.ref("images");
@@ -34,9 +35,6 @@ function Execute(){
     document.getElementById("mondrian").className = "fade_out";
     document.getElementById("chartArea").className = "fade_in";
     document.getElementById("canvasOverlay").style.display="none";
-
-
-  
 
 //request reference street data from endpoint  
 function fetchdata() {
@@ -100,9 +98,9 @@ function getStreetSpeeds() {
             }
             
             var chartArea = document.getElementById("chartArea");
-            // return data, chartArea;
+
             drawSVG(data, chartArea, 0.70);
-            //commented out
+   
             writedata(data);
         },
         error: function (e) {
@@ -113,23 +111,22 @@ function getStreetSpeeds() {
 //setTimeout(fetchdata, 1800000);
 // return data, chartArea;
 
-function writedata(data) {
-    var t = new Date();
-    var timeid = t.getTime();
-    var timeStamp = t.toString();
-    var filename = "img-" + timeid;
-    //how to take the svg/xml structure and simply write it to firebase?
-    //var dataSVG = (new XMLSerializer()).serializeToString(document.getElementById("chartArea").getElementsByTagName("svg").item(0));
+//commenting this out because the time delay doesn't seem to be working
+// function writedata(data) {
+//     var t = new Date();
+//     var timeid = t.getTime();
+//     var timeStamp = t.toString();
+//     var filename = "img-" + timeid;
+//     //how to take the svg/xml structure and simply write it to firebase
+//     console.log(timeid, timeStamp, filename, data);
 
-    console.log(timeid, timeStamp, filename, data);
-
-    db.ref('images/' + filename).set({
-        id: filename,
-        dataSVG: "null",
-        dataJSON: data,
-        time: timeStamp
-    });
-};
+//     db.ref('images/' + filename).set({
+//         id: filename,
+//         dataSVG: "null",
+//         dataJSON: data,
+//         time: timeStamp
+//     });
+// };
 
 
 function updateTime() {
@@ -141,10 +138,7 @@ function updateTime() {
     $('#clock').text(d);
 }
 
-
 setInterval(updateTime, 1000) 
-
-
 
 function drawSVG(data, container, scaleFactor){
             console.log(data);
@@ -341,7 +335,7 @@ $(document).ready(function(){
         //display retrieved data sample in the browser
         // console.log("date as of" + JSON.stringify(dataJSONLast))
         // console.log("date as of" + dataJSONLast)
-
+        //RETURNS UNDEFINED... NEED TO FIX
         // $("#date").text("Last updated day: " + dataJSONLast[0]["date as of"].substring(0, 10));
         // $("#time").text("Last updated time: " + dataJSONLast[0]["date as of"].substring(11, 16));
 
