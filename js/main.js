@@ -34,10 +34,12 @@ function Execute(){
     document.getElementById("mondrian").className = "fade_out";
     document.getElementById("chartArea").className = "fade_in";
     document.getElementById("canvasOverlay").style.display="none";
+  
 
 //request reference street data from endpoint  
 function fetchdata() {
-    console.log("getting street data using cors anywhere proxy");
+ 
+    // console.log("getting street data using cors anywhere proxy");
     $.ajax({
         type: "GET",
         url: encodeURI('https://databoogiewoogie.herokuapp.com/https://flowmap.nyctmc.org/data/mim_polylines_info.json'),
@@ -50,6 +52,7 @@ function fetchdata() {
                 data.push(element);
             });
             getStreetSpeeds();
+            document.getElementByClass("d3-tip").style.display="none";
         },
         error: function (e) {
             console.log("error loading street data " + e);
@@ -147,7 +150,7 @@ function drawSVG(data, container, scaleFactor){
     
             var widthAttribute = scaleFactor*100;
             var heightAttribute = scaleFactor*100;
-            console.log(widthAttribute.toString()+"vh", heightAttribute.toString()+"vh");
+            // console.log(widthAttribute.toString()+"vh", heightAttribute.toString()+"vh");
             //create Boogie Woogie canvas
             const svg = d3.select(container).append("svg")
                 //canvas height and width
@@ -175,7 +178,7 @@ function drawSVG(data, container, scaleFactor){
                 vW_unscaled = $(this).innerWidth();
                 vH = scaleFactor * vH_unscaled
                 vW = scaleFactor * vW_unscaled
-                console.log("resize");
+                // console.log("resize");
                 redraw(vH, vW);
             })
 
@@ -188,8 +191,8 @@ function drawSVG(data, container, scaleFactor){
                 //rectHeight = vH / 32;
                 //rectWidth = rectHeight;
                 //change rectangle size based on new canvas size
-                console.log("rectSize is now" + rectSize);
-                console.log("vHeight is now" + vH);
+                // console.log("rectSize is now" + rectSize);
+                // console.log("vHeight is now" + vH);
 
                 //tooltip
                 const tip = d3.tip()
@@ -278,7 +281,7 @@ function drawSVG(data, container, scaleFactor){
                     .attr("fill", "#f3f3f3")
                 
             }
-    return(console.log(vH, rectSize));
+    // return(console.log(vH, rectSize));
 
 }
 
