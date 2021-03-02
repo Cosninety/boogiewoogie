@@ -5,11 +5,6 @@ ORDER OF OPERATIONS:
     
 */
 
-var dataOnceArray = [];
-var data = [];
-var speedData = [];
-var FEETPERSEC_MILESPERHOUR_FACTOR = 0.681818;
-
 //Initialize Firebase
 var firebaseConfig = {
     apiKey: "AIzaSyBdBvm5AKa6fI004M_9jf2n5nyVAHvVdZQ",
@@ -35,74 +30,36 @@ function Execute(){
     document.getElementById("chartArea").className = "fade_in";
     document.getElementById("canvasOverlay").style.display="none";
 
-//request reference street data from endpoint  
+//request data from API    
 function fetchdata() {
-    console.log("getting street data using cors anywhere proxy");
+
     $.ajax({
+        url: encodeURI("https://data.cityofnewyork.us/resource/i4gi-tjb9.json?$order=data_as_of DESC&borough=Manhattan"),
+        // url: "https://data.cityofnewyork.us/resource/i4gi-tjb9.json?",
         type: "GET",
-        url: encodeURI('https://databoogiewoogie.herokuapp.com/https://flowmap.nyctmc.org/data/mim_polylines_info.json'),
-        dataType: "json",
-        contentType: "application/json",
-        success: function (results) {
-            console.log(" Success getting streets for " + results.RECORDS.length + "locations");
-            var records = results.RECORDS;
-            records.forEach(function (element) {
-                data.push(element);
-            });
-            getStreetSpeeds();
+        data: {
+            "$limit": 1024,
+            "$$app_token": "ReXNLc0gRAMKhmOChFYGqCdlk"
         },
-        error: function (e) {
-            console.log("error loading street data " + e);
-            console.log(e);
-        }
-    });
-}
+        beforeSend: function () {
+            // Show image container
+            // $("#loaderGif").css("display:block !important");
+        },
+        complete: function (data) {
 
-function getStreetSpeeds() {
-    $.ajax({
-        type: "GET",
-        url: encodeURI('https://databoogiewoogie.herokuapp.com/https://flowmap.nyctmc.org/data/mim_link_data.json'),
-        async: true,
-        dataType: "json",
-        contentType: "application/json",
-        success: function (results) {
-            console.log(" Success getting street speed data for " + results.RECORDS.length + "points");
-            var linkData = results.RECORDS;
-            data.forEach(function (poly, index) {
-//                var id = poly.sid;
-//                linkData[id].
-                for (var i = 0; i < Math.min(data.length, linkData.length); i++) {
-                    if (poly.sid == linkData[i].sid) {
-                        // parseInt
-                        data[i]['speed'] = ((poly.polyline_length_ft / linkData[i].medianTravelTime_seconds) * FEETPERSEC_MILESPERHOUR_FACTOR).toFixed(2);
-                    }
-                    else {
-                    }
-                }
-                
-            });
-
-            if (data.length < 1024){
-                var difference = 1024 - data.length;
-                console.log("data is shorter. concatenating "+difference+" items from dataOnceArray.");
-                dataOnceArray.reverse().slice(0,difference).forEach(function(element){
-                    data.push(element);
-                });
-            }
-            else{
-                console.log("data is equal to or greater than 1024..");
-            }
-            
+            var data = data.responseJSON;
+            alert("Retrieved " + data.length + " records from the dataset!");
+            console.log(data);
             var chartArea = document.getElementById("chartArea");
-            // return data, chartArea;
-            drawSVG(data, chartArea, 0.70);
-            // writedata(data);
-        },
-        error: function (e) {
-            console.log("error getting street speed data" + e);
+            //return data, chartArea;
         }
+    }).done(function (data){
+            console.log(data);
+            drawSVG(data, chartArea, 0.70);
+            writedata(data);
+
     });
-}
+};
 //setTimeout(fetchdata, 1800000);
 // return data, chartArea;
 
@@ -152,11 +109,12 @@ function drawSVG(data, container, scaleFactor){
             const svg = d3.select(container).append("svg")
                 //canvas height and width
                 .attr("id", container.id+"-svg")
-                //.attr('viewBox', '0 0 70 70')
+                // .attr('viewBox', '0 0 50 100');
                 .attr("width", widthAttribute.toString()+"vh")
                 .attr("height", heightAttribute.toString()+"vh")
                 .attr("style", "outline: thin solid #adadad")
                 .attr("style", "display: block");
+            //.attr("viewBox", "0, 0, auto, auto");
 
             //
             vH_unscaled = $(window).innerHeight();
@@ -196,20 +154,12 @@ function drawSVG(data, container, scaleFactor){
                     .attr('class', 'd3-tip')
                     .html(d => d)
                     .html(d => {
-                        if (d['speed'] != null){
-                            // let text = "<span>Borough: </span>" + d['borough'] + '<br>'
-                            // text += "<span>Location: </span>" + d['link_name'] + '<br>'
-                            text = "<span>Speed: </span>" + d['speed'] + "<span> mph</span>"
-                            // , text += "x= "+d.x+" y= "+d.y
-                            // text += "<span>Timestamp: </span>" + d['data_as_of']
-                            return text;    
-                            } 
-                            else {
-                            text = "No data"
-                            return text;    
-                            }
-                        
-                        
+                        // let text = "<span>Borough: </span>" + d['borough'] + '<br>'
+                        // text += "<span>Location: </span>" + d['link_name'] + '<br>'
+                        text = "<span>Speed: </span>" + d['speed'] + "<span> mph</span>"
+                        // , text += "x= "+d.x+" y= "+d.y
+                        // text += "<span>Timestamp: </span>" + d['data_as_of']
+                        return text;
                     })
                 svg.call(tip);
 
@@ -237,14 +187,10 @@ function drawSVG(data, container, scaleFactor){
                             // yellow
                             // return "#ffd861";
                             return "#ffdb00";
-                        } else if (d['speed'] < 10) {
+                        }
                         // red
                         return "#e30000";
                         // return "#eb1044";
-                        } else {
-                        return "#cbcbcb";
-                        }
-                            
                     })
                     .on('mouseover', tip.show)
                     .on('mouseout', tip.hide)
@@ -308,6 +254,7 @@ $(document).ready(function(){
         document.getElementById("mondrian").style.display = "none";
         var chartArea = document.getElementById("chartArea");
         var dataOnce = snapshot.val();
+        console.log(dataOnce);
 
         //the JSONData variable is the JSON format of the last request. Can use that to draw a canvas while you wait for the next request to come in.
         var dataJSONLast = Object.values(dataOnce)[Object.keys(dataOnce).length - 1].dataJSON;
@@ -317,7 +264,7 @@ $(document).ready(function(){
         var timeNow = new Date().getTime();
         var timeDiff = Math.abs(timeNow - timeLast);
 
-        if (timeDiff < 1000) {
+        if (timeDiff < 1800000) {
             //time difference is less than 30 min, do nothing but set timer for remainder of time before running fetchdata function
             console.log("No new request made since " + timeDiff + "milliseconds / " + timeDiff / 60000 + "mins since last request");
             setTimeout(fetchdata, timeDiff);
@@ -361,16 +308,9 @@ $(document).ready(function(){
             archiveElement.appendChild(titleElement);
             archiveElement.appendChild(archiveCanvas);
             document.getElementById("archive").appendChild(archiveElement);
-            
-            dataJSON.forEach(function(element){
-                if (dataOnceArray.length < 1024){
-                    dataOnceArray.push(element); 
-                }
-                else {return};
-            });
         });
         
-        return console.log(dataOnceArray);
+        return dataOnce;
 
     });
 });
