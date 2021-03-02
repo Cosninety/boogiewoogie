@@ -34,6 +34,7 @@ function Execute(){
     document.getElementById("mondrian").className = "fade_out";
     document.getElementById("chartArea").className = "fade_in";
     document.getElementById("canvasOverlay").style.display="none";
+    document.getElementByClassName("d3-tip").style.display="none";
   
 
 //request reference street data from endpoint  
@@ -140,13 +141,13 @@ function updateTime() {
 
 setInterval(updateTime, 1000) 
 
-document.getElementByClass("d3-tip").style.display="none";
+
 
 function drawSVG(data, container, scaleFactor){
             console.log(data);
             //d3 ____________________________________________________________________
 
-
+            document.getElementByClassName("d3-tip").style.display="initial";
             //clear canvas for new data load...
             d3.select(container).selectAll('*').remove();
     
