@@ -103,7 +103,7 @@ function getStreetSpeeds() {
             // return data, chartArea;
             drawSVG(data, chartArea, 0.70);
             //commented out
-            // writedata(data);
+            writedata(data);
         },
         error: function (e) {
             console.log("error getting street speed data" + e);
@@ -339,10 +339,11 @@ $(document).ready(function(){
         drawSVG(dataJSONLast, chartArea, 0.70);
                   
         //display retrieved data sample in the browser
-        console.log("date as of" + JSON.stringify(dataJSONLast))
-        console.log("date as of" + dataJSONLast)
-        $("#date").text("Last updated day: " + dataJSONLast[0]["date as of"].substring(0, 10));
-        $("#time").text("Last updated time: " + dataJSONLast[0]["date as of"].substring(11, 16));
+        // console.log("date as of" + JSON.stringify(dataJSONLast))
+        // console.log("date as of" + dataJSONLast)
+
+        // $("#date").text("Last updated day: " + dataJSONLast[0]["date as of"].substring(0, 10));
+        // $("#time").text("Last updated time: " + dataJSONLast[0]["date as of"].substring(11, 16));
 
         
         // $("#loaderGif").hide();
