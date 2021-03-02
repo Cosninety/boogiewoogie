@@ -80,6 +80,7 @@ function getStreetSpeeds() {
                     if (poly.sid == linkData[i].sid) {
                         // parseInt
                         data[i]['speed'] = ((poly.polyline_length_ft / linkData[i].medianTravelTime_seconds) * FEETPERSEC_MILESPERHOUR_FACTOR).toFixed(2);
+                        data[i]['date_as_of'] = linkData[i].medianTravelTime_timeStamp;
                     }
                     else {
                     }
@@ -101,6 +102,7 @@ function getStreetSpeeds() {
             var chartArea = document.getElementById("chartArea");
             // return data, chartArea;
             drawSVG(data, chartArea, 0.70);
+            //commented out
             // writedata(data);
         },
         error: function (e) {
@@ -260,12 +262,6 @@ function drawSVG(data, container, scaleFactor){
                     })
                     .on('mouseover', tip.show)
                     .on('mouseout', tip.hide)
-
-                // $.getJSON("https://cors-anywhere.herokuapp.com/json/building.json", function(json) {
-                // console.log(json)
-                // data3 = json
-                // create building grid
-
                 
                 // https://stackoverflow.com/questions/18151455/d3-js-create-objects-on-top-of-each-other/18461464
                 dataBuildings.x = parseInt(dataBuildings.x);
@@ -315,7 +311,7 @@ $(document).ready(function(){
         });
         */
 
-        $("#loaderGif").show();
+        // $("#loaderGif").show();
 
         document.getElementById("mondrian").style.display = "none";
         var chartArea = document.getElementById("chartArea");
@@ -343,11 +339,13 @@ $(document).ready(function(){
         drawSVG(dataJSONLast, chartArea, 0.70);
                   
         //display retrieved data sample in the browser
-        $("#date").text("Last updated day: " + dataJSONLast[0]["data_as_of"].substring(0, 10));
-        $("#time").text("Last updated time: " + dataJSONLast[0]["data_as_of"].substring(11, 16));
-        $("#speed").text("Speed of first...Make Avg TBD: " + dataJSONLast[0]['speed']);
+        console.log("date as of" + JSON.stringify(dataJSONLast))
+        console.log("date as of" + dataJSONLast)
+        $("#date").text("Last updated day: " + dataJSONLast[0]["date as of"].substring(0, 10));
+        $("#time").text("Last updated time: " + dataJSONLast[0]["date as of"].substring(11, 16));
+
         
-        $("#loaderGif").hide();
+        // $("#loaderGif").hide();
 
         //to populate the archive images, iterate over each past data entry
         Object.keys(dataOnce).forEach(function (key) {
