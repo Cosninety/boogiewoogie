@@ -1,10 +1,5 @@
 console.log('js Loaded');
 
-/*
-ORDER OF OPERATIONS:
-    
-*/
-
 var dataOnceArray = [];
 var data = [];
 var speedData = [];
@@ -24,7 +19,6 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 var db = firebase.database();
 var locRef = db.ref("images");
-
 
 var dataBuildings;
 d3.csv("data/buildingBlock.csv", function(result){
@@ -78,7 +72,7 @@ function getStreetSpeeds() {
                     if (poly.sid == linkData[i].sid) {
                         // parseInt
                         data[i]['speed'] = ((poly.polyline_length_ft / linkData[i].medianTravelTime_seconds) * FEETPERSEC_MILESPERHOUR_FACTOR).toFixed(2);
-                        data[i]['date_as_of'] = linkData[i].medianTravelTime_timeStamp;
+                        data[i]['data_as_of'] = linkData[i].medianTravelTime_timeStamp;
                     }
                     else {
                     }
@@ -89,9 +83,11 @@ function getStreetSpeeds() {
             if (data.length < 1024){
                 var difference = 1024 - data.length;
                 console.log("data is shorter. concatenating "+difference+" items from dataOnceArray.");
+                console.log(dataOnceArray);
                 dataOnceArray.reverse().slice(0,difference).forEach(function(element){
-                    data.push(element);
+                data.push(element);
                 });
+               
             }
             else{
                 console.log("data is equal to or greater than 1024..");
@@ -101,6 +97,7 @@ function getStreetSpeeds() {
 
             drawSVG(data, chartArea, 0.70);
    
+             //need to turn back on when ready
             writedata(data);
         },
         error: function (e) {
@@ -112,21 +109,21 @@ function getStreetSpeeds() {
 // return data, chartArea;
 
 //commenting this out because the time delay doesn't seem to be working
-// function writedata(data) {
-//     var t = new Date();
-//     var timeid = t.getTime();
-//     var timeStamp = t.toString();
-//     var filename = "img-" + timeid;
-//     //how to take the svg/xml structure and simply write it to firebase
-//     console.log(timeid, timeStamp, filename, data);
+function writedata(data) {
+    var t = new Date();
+    var timeid = t.getTime();
+    var timeStamp = t.toString();
+    var filename = "img-" + timeid;
+    //how to take the svg/xml structure and simply write it to firebase
+    console.log(timeid, timeStamp, filename, data);
 
-//     db.ref('images/' + filename).set({
-//         id: filename,
-//         dataSVG: "null",
-//         dataJSON: data,
-//         time: timeStamp
-//     });
-// };
+    db.ref('images/' + filename).set({
+        id: filename,
+        dataSVG: "null",
+        dataJSON: data,
+        time: timeStamp
+    });
+};
 
 
 function updateTime() {
@@ -187,37 +184,27 @@ function drawSVG(data, container, scaleFactor){
                 vH = viewportHeight;
                 vW = viewportWidth;
                 rectSize = Math.min(vH, vW) / 32;
-                //rectHeight = vH / 32;
-                //rectWidth = rectHeight;
-                //change rectangle size based on new canvas size
-                // console.log("rectSize is now" + rectSize);
-                // console.log("vHeight is now" + vH);
+
+  
 
                 //tooltip
-               
-
                 const tip = d3.tip()
                     .attr('class', 'd3-tip')
                     .attr('id', 'd3-tip')
                     .html(d => d)
                     .html(d => {
                         if (d['speed'] != null){
-                            // let text = "<span>Borough: </span>" + d['borough'] + '<br>'
-                            // text += "<span>Location: </span>" + d['link_name'] + '<br>'
-                            text = "<span>Speed: </span>" + d['speed'] + "<span> mph</span>"
-                            // , text += "x= "+d.x+" y= "+d.y
-                            // text += "<span>Timestamp: </span>" + d['data_as_of']
+                            text = "<span>Speed: </span>" + d['speed'] + "<span> mph</span>",
+                            text += "<span>Date: </span>" + d['data_as_of'] + "<span> mph</span>"
                             return text;    
                             } 
                             else {
                             text = "No data"
                             return text;    
                             }
-                        
-                        
+                    
                     })
                 svg.call(tip);
-
                
                 // document.getElementById("d3-tip").style.display="initial";
 
@@ -288,7 +275,6 @@ function drawSVG(data, container, scaleFactor){
 //automate
 //use express on ready if using node.js
 
-
 $(document).ready(function(){
 
     console.log("document ready!");
@@ -305,8 +291,6 @@ $(document).ready(function(){
         });
         */
 
-        // $("#loaderGif").show();
-
         document.getElementById("mondrian").style.display = "none";
         var chartArea = document.getElementById("chartArea");
         var dataOnce = snapshot.val();
@@ -319,7 +303,10 @@ $(document).ready(function(){
         var timeNow = new Date().getTime();
         var timeDiff = Math.abs(timeNow - timeLast);
 
-        if (timeDiff < 1000) {
+  
+        if (timeDiff < 1800000) {
+            //  //debugging
+            // if (timeDiff < 1000) {
             //time difference is less than 30 min, do nothing but set timer for remainder of time before running fetchdata function
             console.log("No new request made since " + timeDiff + "milliseconds / " + timeDiff / 60000 + "mins since last request");
             setTimeout(fetchdata, timeDiff);
@@ -330,25 +317,19 @@ $(document).ready(function(){
         }
 
         //draw the most recent chart..This should also grab the buildings data (but something needs to change for that to happen, apparently..).
-        drawSVG(dataJSONLast, chartArea, 0.70);
-                  
-        //display retrieved data sample in the browser
-        // console.log("date as of" + JSON.stringify(dataJSONLast))
-        // console.log("date as of" + dataJSONLast)
-        //RETURNS UNDEFINED... NEED TO FIX
-        // $("#date").text("Last updated day: " + dataJSONLast[0]["date as of"].substring(0, 10));
-        // $("#time").text("Last updated time: " + dataJSONLast[0]["date as of"].substring(11, 16));
-
-        
-        // $("#loaderGif").hide();
+       drawSVG(dataJSONLast, chartArea, 0.70);       
+    
+        // console.log(dataJSONLast[0]["data_as_of"])
+        $("#date").text("Last updated day: " + dataJSONLast[0]["data_as_of"].split(' ')[0]);
+        $("#time").text("Last updated time: " + dataJSONLast[0]["data_as_of"].split(' ')[1]);
 
         //to populate the archive images, iterate over each past data entry
-        Object.keys(dataOnce).forEach(function (key) {
+ 
+        Object.keys(dataOnce).reverse().forEach(function (key) {
             var archiveElement = document.createElement("div");
             archiveElement.id = dataOnce[key].id;
 
             archiveElement.className = "archivedCanvas";
-
 
             //archiveTitle contains the title text of the svg:
             var titleElement = document.createElement("p");
@@ -367,7 +348,9 @@ $(document).ready(function(){
             archiveElement.appendChild(archiveCanvas);
             document.getElementById("archive").appendChild(archiveElement);
             
+        //  
             dataJSON.forEach(function(element){
+                //    dataOnceArray.unshift(element); 
                 if (dataOnceArray.length < 1024){
                     dataOnceArray.push(element); 
                 }
@@ -375,7 +358,7 @@ $(document).ready(function(){
             });
         });
         
-        return console.log(dataOnceArray);
+        // return console.log(dataOnceArray);
 
     });
 });
