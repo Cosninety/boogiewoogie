@@ -105,10 +105,8 @@ function getStreetSpeeds() {
         }
     });
 }
-//setTimeout(fetchdata, 1800000);
-// return data, chartArea;
 
-//commenting this out because the time delay doesn't seem to be working
+
 function writedata(data) {
     var t = new Date();
     var timeid = t.getTime();
@@ -194,8 +192,8 @@ function drawSVG(data, container, scaleFactor){
                     .html(d => d)
                     .html(d => {
                         if (d['speed'] != null){
-                            text = "<span>Speed: </span>" + d['speed'] + "<span> mph</span>",
-                            text += "<span>Date: </span>" + d['data_as_of'] + "<span> mph</span>"
+                            text = "<span>Speed: </span>" + d['speed'] + "<span> mph</span>"
+                            // text += "<span>Date: </span>" + d['data_as_of'] + "<span> mph</span>"
                             return text;    
                             } 
                             else {
@@ -323,6 +321,7 @@ $(document).ready(function(){
         $("#date").text("Last updated day: " + dataJSONLast[0]["data_as_of"].split(' ')[0]);
         $("#time").text("Last updated time: " + dataJSONLast[0]["data_as_of"].split(' ')[1]);
 
+        console.log("time="+dataJSONLast[0]["data_as_of"])
         //to populate the archive images, iterate over each past data entry
  
         Object.keys(dataOnce).reverse().forEach(function (key) {
