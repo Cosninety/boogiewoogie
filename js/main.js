@@ -303,7 +303,7 @@ $(document).ready(function(){
 
   
         // if (timeDiff < 1800000) {
-        if (timeDiff< 86400000){}
+        if (timeDiff< 86400000){
             //  //debugging
             // if (timeDiff < 1000) {
             //time difference is less than 30 min, do nothing but set timer for remainder of time before running fetchdata function
